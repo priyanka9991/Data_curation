@@ -9,7 +9,7 @@ Downloaded data files and curated files can be found in this lambda folder:
 2) Curated_CCLE_Multiomics_files - Contained the curated files<br>
 
 
-############ Data curation scripts ###############
+## Data curation scripts 
 1) maps.py - Creates the following files:<br>
         a) DepMap_Argonne_Mapping.csv - Mapping between DepMap ID, Argonne ID, and RRID (Cellosaurus ID)<br>
         b) es_gs_orig.csv - Contains original gene symbols and EntrenzID from CCLE_expression.csv, CCLE_gene_cn.csv, and CCLE_wes_gene_cn.csv<br>
@@ -34,7 +34,7 @@ Downloaded data files and curated files can be found in this lambda folder:
         g) CCLE_AID_RPPA_20180123.csv - Curated Reverse Phase Protein Array (RPPA) data. Features - Antibiotic name<br>
         h) CCLE_AID_RRBS_TSS_1kb_20180614.csv - Curated DNA Methylation - Reduced Representation Bisulfite Sequencing (RRBS) data. Features - TSS-ID of genes. Second row contains Entrenz gene id, third row contains gene symbols; and third row contains ensembl ids<br>
 
-########## Directories ##########
+## Directories 
 1) Maps - Contains the generated maps<br>
         - DepMap_Argonne_Mapping.csv - Map DepMap ID with Argonne ID and RRID<br>
         - eg_gs_map_mut.csv - Map entrenz id with gene symbol and ensembl id for mutation file<br>
