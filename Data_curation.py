@@ -84,6 +84,18 @@ for i in range(len(map)):
 cn_file_new = pd.DataFrame(rows, columns = col)
 cn_file_new = cn_file_new.drop(columns = ['DepMap_ID'])
 cn_file_new.to_csv(str(file_path+'/Curated_CCLE_Multiomics_files/CCLE_AID_wes_gene_cn.csv'),index=False)
+# Binary copy number
+# deep del < 0.5210507 < het loss < 0.7311832 < diploid < 1.214125 < gain < 1.422233 < amp
+cn_file_new_b = cn_file_new.drop(columns = ['RRID'])
+cn_file_new_b = cn_file_new_b.drop([0,1])
+cn_file_new_b[cn_file_new_b < 0.5210507] = -2
+cn_file_new_b[(cn_file_new_b > 0.5210507) &  (cn_file_new_b < 0.7311832)] = -1
+cn_file_new_b[(cn_file_new_b > 0.7311832) &  (cn_file_new_b < 1.214125)] = 0
+cn_file_new_b[(cn_file_new_b > 1.214125) &  (cn_file_new_b < 1.422233)] = 1
+cn_file_new_b[cn_file_new_b > 1.422233] = 2
+cn_file_new_b.insert(column = 'RRID', loc=0, value = cn_file_new['RRID'][2:])
+cn_file_new_b = pd.concat([cn_file_new[0:2], cn_file_new_b])
+cn_file_new_b.to_csv(str(file_path+'/Curated_CCLE_Multiomics_files/CCLE_AID_wes_gene_cn_binary.csv'),index=False)
 
 
 #########Copy number data - gene#############
@@ -150,6 +162,18 @@ for i in range(len(map)):
 cn_file_new = pd.DataFrame(rows, columns = col)
 cn_file_new = cn_file_new.drop(columns = ['DepMap_ID'])
 cn_file_new.to_csv(str(file_path+'/Curated_CCLE_Multiomics_files/CCLE_AID_gene_cn.csv'),index=False)
+# Binary copy number
+# deep del < 0.5210507 < het loss < 0.7311832 < diploid < 1.214125 < gain < 1.422233 < amp
+cn_file_new_b = cn_file_new.drop(columns = ['RRID'])
+cn_file_new_b = cn_file_new_b.drop([0,1])
+cn_file_new_b[cn_file_new_b < 0.5210507] = -2
+cn_file_new_b[(cn_file_new_b > 0.5210507) &  (cn_file_new_b < 0.7311832)] = -1
+cn_file_new_b[(cn_file_new_b > 0.7311832) &  (cn_file_new_b < 1.214125)] = 0
+cn_file_new_b[(cn_file_new_b > 1.214125) &  (cn_file_new_b < 1.422233)] = 1
+cn_file_new_b[cn_file_new_b > 1.422233] = 2
+cn_file_new_b.insert(column = 'RRID', loc=0, value = cn_file_new['RRID'][2:])
+cn_file_new_b = pd.concat([cn_file_new[0:2], cn_file_new_b])
+cn_file_new_b.to_csv(str(file_path+'/Curated_CCLE_Multiomics_files/CCLE_AID_gene_cn_binary.csv'),index=False)
 
 
 ######### Gene expression #############
