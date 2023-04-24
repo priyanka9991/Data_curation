@@ -29,10 +29,12 @@ Downloaded data files and curated files can be found in this lambda folder:<br>
         b) CCLE_AID_expression_scaled.csv - curated gene expression file after scaling the TPM values such that the TPM sum is 1 million<br>
         c) CCLE_AID_expression_full.csv - Curated gene expression file from CCLE_expression_full.csv. Sum of TPM values is ~ 1 million. Features - Ensemble gene IDs. (First row contains Entrenz ID and second row contains gene symbols<br>
         d) CCLE_AID_gene_cn.csv - Curated copy number data. Features - Entrez gene IDs (Hugo gene symbols in the first row; Ensembl id in the second row). Rows - Cell-lines<br>
-        e) CCLE_AID_wes_gene_cn.csv - Curated copy number wes data. Features - Entrez gene IDs (Hugo gene symbols in the first row; Ensembl id in the second row). Rows - Cell-lines<br>
-        f) CCLE_AID_miRNA_20180525.csv - Curated miRNA data<br>
-        g) CCLE_AID_RPPA_20180123.csv - Curated Reverse Phase Protein Array (RPPA) data. Features - Antibiotic name<br>
-        h) CCLE_AID_RRBS_TSS_1kb_20180614.csv - Curated DNA Methylation - Reduced Representation Bisulfite Sequencing (RRBS) data. Features - TSS-ID of genes. Second row contains Entrenz gene id, third row contains gene symbols; and third row contains ensembl ids<br>
+        e) CCLE_AID_gene_cn_binary.csv - Binarized version of CCLE_AID_gene_cn.csv using:deep del < 0.5210507 < het loss < 0.7311832 < diploid < 1.214125 < gain < 1.422233 < amp <br>
+        f) CCLE_AID_wes_gene_cn.csv - Curated copy number wes data. Features - Entrez gene IDs (Hugo gene symbols in the first row; Ensembl id in the second row). Rows - Cell-lines<br>
+        g) CCLE_AID_wes_gene_cn_binary.csv - Binarized version of CCLE_AID_wes_gene_cn.csv using:deep del < 0.5210507 < het loss < 0.7311832 < diploid < 1.214125 < gain < 1.422233 < amp <br>
+        h) CCLE_AID_miRNA_20180525.csv - Curated miRNA data<br>
+        i) CCLE_AID_RPPA_20180123.csv - Curated Reverse Phase Protein Array (RPPA) data. Features - Antibiotic name<br>
+        j) CCLE_AID_RRBS_TSS_1kb_20180614.csv - Curated DNA Methylation - Reduced Representation Bisulfite Sequencing (RRBS) data. Features - TSS-ID of genes. Second row contains Entrenz gene id, third row contains gene symbols; and third row contains ensembl ids<br>
 
 ## Directories 
 1) Maps - Contains the generated maps<br>
