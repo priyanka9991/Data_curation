@@ -74,8 +74,22 @@ def mutation_count(savename, protein_filter = False):
                 mut_count.loc[i, gene[j]] = mut_count.loc[i, gene[j]] + 1
 
     # Add RRID ID
-    # Load mapping file
-    map = pd.read_csv(str(file_path+'/Maps/DepMap_Argonne_Mapping.csv'))
+    # Load DepMap mapping file
+    map = pd.read_csv(str(file_path+'/CCLE_Multiomics_Data/sample_info.csv')) # Mapping file downloaded from DepMap
+    map_imp_id = pd.read_csv(str(file_path+ '/samples.csv')) # Mapping file from Sara Gosline's git repo
+    map_imp_id = map_imp_id[map_imp_id['id_source'] == 'DepMap'].reset_index(drop=True) # filtering id source as DepMap
+    ind_imp_id = np.where(pd.isna(map['RRID'])==True)[0] # Indices where RRID = NaN
+    #Assign improve ids to map file with missing RRID
+    for ind in ind_imp_id:
+        ind2 = np.where(map_imp_id['other_id']==map['DepMap_ID'][ind])[0]
+        if len(ind2)!=0:
+            map['RRID'][ind] = map_imp_id['improve_sample_id'][ind2].values[0]
+    map = map.dropna(subset = ['RRID']).reset_index(drop=True) # Remove rows where RRID/Improve_id == NaN
+    # Some DepMap IDs in this mapping file is mapped to the same RRIDs. Manual changes to address this issue:
+    cl_rm = ['ACH-001189','ACH-001024', 'ACH-002222', 'ACH-002260'] #cell-lines to be removed
+    for cell in cl_rm:
+        map = map[map.DepMap_ID != cell].reset_index(drop=True)
+    ##
     mut_count.insert(loc=0, column='RRID', value=['' for i in range(mut_count.shape[0])])
     new_row1 = pd.DataFrame([['', '']+list(en_gs_id['New_Hugo_Symbol'].values)],columns = mut_count.columns )
     new_row2 = pd.DataFrame([['', '']+list(en_gs_id['Ensembl_id'].values)],columns = mut_count.columns )
@@ -92,6 +106,7 @@ def mutation_count(savename, protein_filter = False):
     mut_count_new = pd.DataFrame(rows, columns = col)
     mut_count_new = mut_count_new.drop(columns = ['DepMap_ID'])
     save_path = file_path+'/Curated_CCLE_Multiomics_files/'+savename+'.csv'
+    mut_count_new = mut_count_new.drop_duplicates().reset_index(drop=True) # Remove duplicate rows
     mut_count_new.to_csv(str(save_path),index=False)
 
 
@@ -122,14 +137,29 @@ def mutation_binary2(savename, protein_filter = False):
     new_row = pd.DataFrame([head],columns = mut_nodup_gc.columns )
     new_row.iloc[:,:11] = ''
     mut_nodup_gc = pd.concat([new_row, mut_nodup_gc]).reset_index(drop = True)
-    # Load mapping file
-    map = pd.read_csv(str(file_path+'/Maps/DepMap_Argonne_Mapping.csv'))
+    # Load DepMap mapping file
+    map = pd.read_csv(str(file_path+'/CCLE_Multiomics_Data/sample_info.csv')) # Mapping file downloaded from DepMap
+    map_imp_id = pd.read_csv(str(file_path+ '/samples.csv')) # Mapping file from Sara Gosline's git repo
+    map_imp_id = map_imp_id[map_imp_id['id_source'] == 'DepMap'].reset_index(drop=True) # filtering id source as DepMap
+    ind_imp_id = np.where(pd.isna(map['RRID'])==True)[0] # Indices where RRID = NaN
+    #Assign improve ids to map file with missing RRID
+    for ind in ind_imp_id:
+        ind2 = np.where(map_imp_id['other_id']==map['DepMap_ID'][ind])[0]
+        if len(ind2)!=0:
+            map['RRID'][ind] = map_imp_id['improve_sample_id'][ind2].values[0]
+    map = map.dropna(subset = ['RRID']).reset_index(drop=True) # Remove rows where RRID/Improve_id == NaN
+    # Some DepMap IDs in this mapping file is mapped to the same RRIDs. Manual changes to address this issue:
+    cl_rm = ['ACH-001189','ACH-001024', 'ACH-002222', 'ACH-002260'] #cell-lines to be removed
+    for cell in cl_rm:
+        map = map[map.DepMap_ID != cell].reset_index(drop=True)
+
     mutbin_file = mut_nodup_gc.iloc[:,range(11)].copy()
     for i in range(len(map)):
         if (map['DepMap_ID'][i] in mut_nodup_gc.columns):
             id = mut_nodup_gc.columns.get_loc(map['DepMap_ID'][i])
             mutbin_file[map['RRID'][i]] = mut_nodup_gc.iloc[:,id]
     save_path = file_path+'/Curated_CCLE_Multiomics_files/'+savename+'.csv'
+    mutbin_file = mutbin_file.drop_duplicates().reset_index(drop=True) # Remove duplicate rows
     mutbin_file.to_csv(save_path)
 
 # Function calls
