@@ -35,6 +35,7 @@ Downloaded data files and curated files can be found in this lambda folder:<br>
         h) CCLE_AID_miRNA_20180525.csv - Curated miRNA data<br>
         i) CCLE_AID_RPPA_20180123.csv - Curated Reverse Phase Protein Array (RPPA) data. Features - Antibiotic name<br>
         j) CCLE_AID_RRBS_TSS_1kb_20180614.csv - Curated DNA Methylation - Reduced Representation Bisulfite Sequencing (RRBS) data. Features - TSS-ID of genes. Second row contains Entrenz gene id, third row contains gene symbols; and third row contains ensembl ids<br>
+5) samples.csv -  Mapping file from https://github.com/PNNL-CompBio/candleDataProcessing/tree/main/data <br>
 
 ## Directories 
 1) Maps - Contains the generated maps<br>
