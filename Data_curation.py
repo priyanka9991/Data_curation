@@ -10,8 +10,22 @@ import sys
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 logger = logging.getLogger('Processing CCLE Multiomics data')
 file_path = os.path.dirname(os.path.realpath(__file__))
-# Load Argonne-DepMap mapping file
-map = pd.read_csv(str(file_path+'/Maps/DepMap_Argonne_Mapping.csv'))
+# Load DepMap mapping file
+map = pd.read_csv(str(file_path+'/CCLE_Multiomics_Data/sample_info.csv')) # Mapping file downloaded from DepMap
+map_imp_id = pd.read_csv(str(file_path+ '/samples.csv')) # Mapping file from Sara Gosline's git repo
+map_imp_id = map_imp_id[map_imp_id['id_source'] == 'DepMap'].reset_index(drop=True) # filtering id source as DepMap
+ind_imp_id = np.where(pd.isna(map['RRID'])==True)[0] # Indices where RRID = NaN
+#Assign improve ids to map file with missing RRID
+for ind in ind_imp_id:
+    ind2 = np.where(map_imp_id['other_id']==map['DepMap_ID'][ind])[0]
+    if len(ind2)!=0:
+        map['RRID'][ind] = map_imp_id['improve_sample_id'][ind2].values[0]
+map = map.dropna(subset = ['RRID']).reset_index(drop=True) # Remove rows where RRID/Improve_id == NaN
+# Some DepMap IDs in this mapping file is mapped to the same RRIDs. Manual changes to address this issue:
+cl_rm = ['ACH-001189','ACH-001024', 'ACH-002222', 'ACH-002260'] #cell-lines to be removed
+for cl in cl_rm:
+    map = map[map.DepMap_ID != cl].reset_index(drop=True)
+
 # Load entrz id-gene symbol mapping file for copy number and gene expression files
 path = file_path+'/Maps/eg_gs_map_cn_ge.csv'
 eg_gs = pd.read_csv(path).drop(columns={'Unnamed: 0'}) 
@@ -70,7 +84,7 @@ cn_file.columns = ['DepMap_ID']+list(es_gs2['entrenz_id'])
 new_row1 = pd.DataFrame([['']+list(es_gs2['New_gene_symbol'])],columns = cn_file.columns )
 new_row2 = pd.DataFrame([['']+list(es_gs2['New_ensembl_id'])],columns = cn_file.columns )
 cn_file = pd.concat([new_row1, new_row2, cn_file]).reset_index(drop = True)
-#Map DepMap ID with Argonne ID
+#Map DepMap ID with RRID
 cn_file.insert(loc=0, column='RRID', value=['' for i in range(cn_file.shape[0])])
 col = cn_file.columns
 rows = [cn_file.iloc[0].values]
@@ -83,6 +97,7 @@ for i in range(len(map)):
         rows.append(list(row_append.values))     
 cn_file_new = pd.DataFrame(rows, columns = col)
 cn_file_new = cn_file_new.drop(columns = ['DepMap_ID'])
+cn_file_new = cn_file_new.drop_duplicates().reset_index(drop=True) # Remove duplicate rows
 cn_file_new.to_csv(str(file_path+'/Curated_CCLE_Multiomics_files/CCLE_AID_wes_gene_cn.csv'),index=False)
 # Binary copy number
 # deep del < 0.5210507 < het loss < 0.7311832 < diploid < 1.214125 < gain < 1.422233 < amp
@@ -95,7 +110,7 @@ cn_file_new_b[(cn_file_new_b > 1.214125) &  (cn_file_new_b <= 1.422233)] = 1
 cn_file_new_b[cn_file_new_b > 1.422233] = 2
 cn_file_new_b.insert(column = 'RRID', loc=0, value = cn_file_new['RRID'][2:])
 cn_file_new_b = pd.concat([cn_file_new[0:2], cn_file_new_b])
-cn_file_new_b.to_csv(str(file_path+'/Curated_CCLE_Multiomics_files/CCLE_AID_wes_gene_cn_binary.csv'),index=False)
+cn_file_new_b.to_csv(str(file_path+'/Curated_CCLE_Multiomics_files/CCLE_AID_wes_gene_cn_discretized.csv'),index=False)
 
 
 #########Copy number data - gene#############
@@ -148,7 +163,7 @@ cn_file.columns = ['DepMap_ID']+list(es_gs2['entrenz_id'])
 new_row1 = pd.DataFrame([['']+list(es_gs2['New_gene_symbol'])],columns = cn_file.columns )
 new_row2 = pd.DataFrame([['']+list(es_gs2['New_ensembl_id'])],columns = cn_file.columns )
 cn_file = pd.concat([new_row1, new_row2, cn_file]).reset_index(drop = True)
-#Map DepMap ID with Argonne ID
+#Map DepMap ID with RRID/Improve ID
 cn_file.insert(loc=0, column='RRID', value=['' for i in range(cn_file.shape[0])])
 col = cn_file.columns
 rows = [cn_file.iloc[0].values]
@@ -161,6 +176,7 @@ for i in range(len(map)):
         rows.append(list(row_append.values))     
 cn_file_new = pd.DataFrame(rows, columns = col)
 cn_file_new = cn_file_new.drop(columns = ['DepMap_ID'])
+cn_file_new = cn_file_new.drop_duplicates().reset_index(drop=True) # Remove duplicate rows
 cn_file_new.to_csv(str(file_path+'/Curated_CCLE_Multiomics_files/CCLE_AID_gene_cn.csv'),index=False)
 # Binary copy number
 # deep del < 0.5210507 < het loss < 0.7311832 < diploid < 1.214125 < gain < 1.422233 < amp
@@ -173,7 +189,7 @@ cn_file_new_b[(cn_file_new_b > 1.214125) &  (cn_file_new_b <= 1.422233)] = 1
 cn_file_new_b[cn_file_new_b > 1.422233] = 2
 cn_file_new_b.insert(column = 'RRID', loc=0, value = cn_file_new['RRID'][2:])
 cn_file_new_b = pd.concat([cn_file_new[0:2], cn_file_new_b])
-cn_file_new_b.to_csv(str(file_path+'/Curated_CCLE_Multiomics_files/CCLE_AID_gene_cn_binary.csv'),index=False)
+cn_file_new_b.to_csv(str(file_path+'/Curated_CCLE_Multiomics_files/CCLE_AID_gene_cn_discretized.csv'),index=False)
 
 
 ######### Gene expression #############
@@ -217,7 +233,7 @@ ge_file.columns = ['DepMap_ID']+list(es_gs2['entrenz_id'])
 new_row1 = pd.DataFrame([['']+list(es_gs2['New_gene_symbol'])],columns = ge_file.columns )
 new_row2 = pd.DataFrame([['']+list(es_gs2['New_ensembl_id'])],columns = ge_file.columns )
 ge_file = pd.concat([new_row1, new_row2, ge_file]).reset_index(drop = True)
-#Map DepMap ID with Argonne ID
+#Map DepMap ID with RRID
 ge_file.insert(loc=0, column='RRID', value=['' for i in range(ge_file.shape[0])])
 col = ge_file.columns
 rows = [ge_file.iloc[0].values]
@@ -230,6 +246,7 @@ for i in range(len(map)):
         rows.append(list(row_append.values))     
 ge_file_new = pd.DataFrame(rows, columns = col)
 ge_file_new = ge_file_new.drop(columns = ['DepMap_ID'])
+ge_file_new = ge_file_new.drop_duplicates().reset_index(drop=True) # Remove duplicate rows
 ge_file_new.to_csv(str(file_path+'/Curated_CCLE_Multiomics_files/CCLE_AID_expression.csv'),index=False)
 
 ############ Gene expression - scaled rows ############
@@ -333,7 +350,7 @@ new_row1 = pd.DataFrame([['']+list(es_gs2['New_entrenzID'])],columns = gef_file.
 new_row2 = pd.DataFrame([['']+list(es_gs2['New_gene_symbol'])],columns = gef_file.columns )
 gef_file = pd.concat([new_row2, gef_file]).reset_index(drop = True)
 gef_file = pd.concat([new_row1, gef_file]).reset_index(drop = True)
-#Map DepMap ID with Argonne ID
+#Map DepMap ID with RRID
 gef_file.insert(loc=0, column='RRID', value=['' for i in range(gef_file.shape[0])])
 col = gef_file.columns
 rows = [gef_file.iloc[0].values]
@@ -346,6 +363,7 @@ for i in range(len(map)):
         rows.append(list(row_append.values))     
 gef_file_new = pd.DataFrame(rows, columns = col)
 gef_file_new = gef_file_new.drop(columns = ['DepMap_ID'])
+gef_file_new = gef_file_new.drop_duplicates().reset_index(drop=True) # Remove duplicate rows
 gef_file_new.to_csv(str(file_path+'/Curated_CCLE_Multiomics_files/CCLE_AID_expression_full.csv'),index=False)
 
 
@@ -365,6 +383,7 @@ for i in range(len(map)):
         rows.append(list(row_append.values))     
 rppa_file_new = pd.DataFrame(rows, columns = col)
 rppa_file_new = rppa_file_new.drop(columns = ['CCLE_Name'])
+rppa_file_new = rppa_file_new.drop_duplicates().reset_index(drop=True) # Remove duplicate rows
 rppa_file_new.to_csv(str(file_path+'/Curated_CCLE_Multiomics_files/CCLE_AID_RPPA_20180123.csv'),index=False)
 
 
@@ -424,6 +443,7 @@ for i in range(len(map)):
         rows.append(list(row_append.values))     
 rrbs_file_new = pd.DataFrame(rows, columns = col)
 rrbs_file_new = rrbs_file_new.drop(columns = ['CCLE_Name'])
+rrbs_file_new = rrbs_file_new.drop_duplicates().reset_index(drop=True) # Remove duplicate rows
 rrbs_file_new.to_csv(str(file_path+'/Curated_CCLE_Multiomics_files/CCLE_AID_RRBS_TSS_1kb_20180614.csv'),index=False)
 
 ########## miRNA #############
@@ -446,6 +466,42 @@ for i in range(len(map)):
         rows.append(list(row_append.values))     
 mirna_file_new = pd.DataFrame(rows, columns = col)
 mirna_file_new = mirna_file_new.drop(columns = ['CCLE_Name'])
+mirna_file_new = mirna_file_new.drop_duplicates().reset_index(drop=True) # Remove duplicate rows
 mirna_file_new.to_csv(str(file_path+'/Curated_CCLE_Multiomics_files/CCLE_AID_miRNA_20180525.csv'),index=False)
 
 logger.info('Data curation completed!')
+
+''''
+### duplicate rrids in map
+ind = np.where(map.duplicated(subset = ['RRID']) == True)[0] # duplicate rows
+map_dup = pd.DataFrame(columns=map.columns)
+for i in ind:
+    ind_all = np.where(map['RRID']==map['RRID'][i])[0]
+    map_dup = pd.concat([map_dup, map.iloc[ind_all]])
+
+map_dup = map_dup.sort_values(by = 'RRID')
+
+##
+
+cl_check = ['ACH-000833', 'ACH-001189', 'ACH-001024', 'ACH-001041', 'ACH-001737', 'ACH-002222', 'ACH-001543', 'ACH-002260']
+cl_check_d = {}
+for cl in cl_check:
+    cl_check_d[cl] = 0
+
+files = ['CCLE_wes_gene_cn.csv', 'CCLE_gene_cn.csv', 'CCLE_expression.csv', 'CCLE_expression_full.csv']
+for file in files:
+    path = str(file_path +'/CCLE_Multiomics_Data/'+file)
+    data_file = pd.read_csv(path)
+    data_file=data_file.rename(columns={'Unnamed: 0':'DepMap_ID'})
+    for cl in cl_check:
+        if cl in data_file.DepMap_ID.values:
+            cl_check_d[cl] = cl_check_d[cl]+1
+
+path = file_path+'/CCLE_Multiomics_Data/CCLE_mutations.csv'
+mut = pd.read_csv(path)
+mut = mut[mut['Entrez_Gene_Id']!=0].reset_index(drop=True) # Remove rows with entrenz id = 0
+mut = mut.drop_duplicates().reset_index(drop=True) # Remove duplicate rows
+for cl in cl_check:
+    if cl in mut.DepMap_ID.values:
+        cl_check_d[cl] = cl_check_d[cl]+1
+'''
