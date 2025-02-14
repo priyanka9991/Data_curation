@@ -1,3 +1,13 @@
+Downloaded data files and curated files can be found in this lambda folder:
+/lambda_stor/homes/pvasanthakumari/Data_Curation_final
+
+CCLE_Multiomics_Data -
+-Contains 10 files (Release 22Q2) downloaded from https://depmap.org/portal/download/
+-Argonne_combined_rnaseq_data - File containing Argonne IDs of the cell line . Used to generate the mapping file
+-CCLE_Multiomics_Data/README.txt - Information on the CCLE multiomics files
+-CCLE_Multiomics_Data/sample_info.csv - Sample information on the CCLE multiomics files
+Curated_CCLE_Multiomics_files/ - Contains the curated files
+
 ############ Scripts ###############
 
 1) maps.py - Creates the following files:
