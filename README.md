@@ -8,7 +8,7 @@ CCLE_Multiomics_Data -
 -CCLE_Multiomics_Data/sample_info.csv - Sample information on the CCLE multiomics files
 Curated_CCLE_Multiomics_files/ - Contains the curated files
 
-##Scripts
+# Scripts
 
 1) maps.py - Creates the following files:
         a) DepMap_Argonne_Mapping.csv - Mapping between DepMap ID, Argonne ID, and RRID (Cellosaurus ID)
@@ -40,13 +40,13 @@ Curated_CCLE_Multiomics_files/ - Contains the curated files
         j) CCLE_AID_RRBS_TSS_1kb_20180614.csv - Curated DNA Methylation - Reduced Representation Bisulfite Sequencing (RRBS) data. Features - TSS-ID of genes. Second row contains Entrenz gene id, third row contains gene symbols; and third row contains ensembl ids
 6) samples.csv -  Mapping file from https://github.com/PNNL-CompBio/candleDataProcessing/tree/main/data
 
-########## Data from DepMap 22Q2 ##########
-1) CCLE_Multiomics_Data -
+# Directories
+1) CCLE_Multiomics_Data - Data from DepMapp 22Q2
         -Contains 10 files downloaded from https://depmap.org/portal/download/
         -Argonne_combined_rnaseq_data - File containing Argonne IDs of the cell line . Used to generate the mapping file
         -README.txt - Information on the CCLE multiomics files
         -sample_info.csv - Sample information on the CCLE multiomics files
-2) Curated_CCLE_Multiomics_files - Contained the curated files
+2) Curated_CCLE_Multiomics_files - Contains the curated files
 3) Maps - Contains the generated maps
         - DepMap_Argonne_Mapping.csv - Map DepMap ID with Argonne ID and RRID
         - eg_gs_map_mut.csv - Map entrenz id with gene symbol and ensembl id for mutation file
