@@ -8,7 +8,7 @@ CCLE_Multiomics_Data -
 -CCLE_Multiomics_Data/sample_info.csv - Sample information on the CCLE multiomics files
 Curated_CCLE_Multiomics_files/ - Contains the curated files
 
-############ Scripts ###############
+#Scripts
 
 1) maps.py - Creates the following files:
         a) DepMap_Argonne_Mapping.csv - Mapping between DepMap ID, Argonne ID, and RRID (Cellosaurus ID)
