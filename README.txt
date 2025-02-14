@@ -1,4 +1,4 @@
-############ Codes ###############
+############ Scripts ###############
 
 1) maps.py - Creates the following files:
         a) DepMap_Argonne_Mapping.csv - Mapping between DepMap ID, Argonne ID, and RRID (Cellosaurus ID)
@@ -13,7 +13,11 @@
         a) Mutation_AID_count.csv - File showing the number of mutations in genes for cell-lines. Column headers - Entrenz gene ids(Second row shows Gene symbols, third row - Ensembl ID). Rows - cell-lines
         b) Mutation_AID_binary.csv - Binary file showing the presence of specific genome changes in the cell-lines. Column headers - cell-lines. Rows - Genome-change. Several columns before 'Genome_Change' contains more information on the mutations
         c) Mutation_AID_long_format.csv - Mutation file in the long format
-4) Data_curation.py - Code for curating all the other CCLE multiomics data. The files generated are:
+4) mutation_curation_with_isDel.py - Code for curating mutation data.Included isDeleterious and Annotation_Transcripts columns. Also does some processing on the columns to unify metadata for rows having different Annotation_Transcript for the same Genome_Change. Generates:
+        a) Mutation_RRID_binary_isDel - .csv and .parquet
+        b) Mutation_RRID_count_isDel - .csv 
+        c) Mutation_RRID_long_format_isDel - .csv and .parquet
+5) Data_curation.py - Code for curating all the other CCLE multiomics data. The files generated are:
         a) CCLE_AID_expression.csv - curated gene expression file. Features - Entrez gene IDs (Hugo gene symbols in the first row; Ensembl id in the second row). Rows - Cell-lines
         b) CCLE_AID_expression_scaled.csv - curated gene expression file after scaling the TPM values such that the TPM sum is 1 million
         c) CCLE_AID_expression_full.csv - Curated gene expression file from CCLE_expression_full.csv. Sum of TPM values is ~ 1 million. Features - Ensemble gene IDs. (First row contains Entrenz ID and second row contains gene symbols
@@ -24,9 +28,9 @@
         h) CCLE_AID_miRNA_20180525.csv - Curated miRNA data
         i) CCLE_AID_RPPA_20180123.csv - Curated Reverse Phase Protein Array (RPPA) data. Features - Antibiotic name
         j) CCLE_AID_RRBS_TSS_1kb_20180614.csv - Curated DNA Methylation - Reduced Representation Bisulfite Sequencing (RRBS) data. Features - TSS-ID of genes. Second row contains Entrenz gene id, third row contains gene symbols; and third row contains ensembl ids
-5) samples.csv -  Mapping file from https://github.com/PNNL-CompBio/candleDataProcessing/tree/main/data
+6) samples.csv -  Mapping file from https://github.com/PNNL-CompBio/candleDataProcessing/tree/main/data
 
-########## Directories ##########
+########## Data from DepMap 22Q2 ##########
 1) CCLE_Multiomics_Data -
         -Contains 10 files downloaded from https://depmap.org/portal/download/
         -Argonne_combined_rnaseq_data - File containing Argonne IDs of the cell line . Used to generate the mapping file
