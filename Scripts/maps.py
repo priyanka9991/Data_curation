@@ -4,7 +4,7 @@ import numpy as np
 
 ########### Map DepMapID with Argonne ID #################
 
-file_path = os.path.dirname(os.path.realpath(__file__))
+file_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__))) # Move to one level lower
 path = str(file_path + '/CCLE_Multiomics_Data/Argonne_combined_rnaseq_data')
 anl_file = pd.read_table(path)
 cell_lines = []

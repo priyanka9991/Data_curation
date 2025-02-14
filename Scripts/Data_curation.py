@@ -9,7 +9,8 @@ import sys
 # setup logging
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 logger = logging.getLogger('Processing CCLE Multiomics data')
-file_path = os.path.dirname(os.path.realpath(__file__))
+file_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__))) # Move to one level lower
+
 # Load DepMap mapping file
 map = pd.read_csv(str(file_path+'/CCLE_Multiomics_Data/sample_info.csv')) # Mapping file downloaded from DepMap
 map_imp_id = pd.read_csv(str(file_path+ '/samples.csv')) # Mapping file from Sara Gosline's git repo
@@ -434,7 +435,7 @@ new_row2 = pd.DataFrame([['']+list(ens_id)],columns = rrbs_file.columns )
 rrbs_file = pd.concat([new_row1,new_row2, rrbs_file]).reset_index(drop=True)
 rrbs_file.insert(loc=0, column='RRID', value=['' for i in range(rrbs_file.shape[0])])
 col = rrbs_file.columns
-rows = [rrbs_file.iloc[0].values, rrbs_file.iloc[1].values]
+rows = [rrbs_file.iloc[0].values, rrbs_file.iloc[1].values, rrbs_file.iloc[2].values]
 for i in range(len(map)):
     id = np.where(rrbs_file['CCLE_Name']==map['CCLE_Name'][i])
     if len(id[0])!=0:

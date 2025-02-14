@@ -1444,7 +1444,7 @@ eg2ensembl <- function(eg)
 
 
 ### Mutation file
-mut_file = read.csv(file = '/Users/priyanka/Documents/Argonne/Data_Curation_final/CCLE_Multiomics_Data/CCLE_mutations.csv')
+mut_file = read.csv(file = '../CCLE_Multiomics_Data/CCLE_mutations.csv')
 gs <- mut_file[which(mut_file['Entrez_Gene_Id']!=0), 1]
 gs <- gs[! gs %in% 'LST3'] # Remove LST3 as, 28234-SLCO1B3, 84173-ELMOD3, 338821-SLCO1B7 are suitable mappings.These three genes are already mapped
 #Convert entrenz id from mutation file to gene symbol
@@ -1453,33 +1453,33 @@ gs_new2 <- eg2gs(en_id)
 ens_id = eg2ensembl(en_id)
 #map1 <- data.frame(orig_GS = gs, entrez_id = en_id_new, new_GS = gs_new)
 map_new <- data.frame(orig_GS = gs,old_entrez_id = en_id, en2gs_GS = unlist(gs_new2), ens_id = unlist(ens_id))
-write.csv(map_new, '/Users/priyanka/Documents/Argonne/Data_Curation_final/Maps/eg_gs_map_mut.csv')
+write.csv(map_new, '../Data_Curation_final/Maps/eg_gs_map_mut.csv')
 
 ### Gene expression and gene copy number
-es_gs_file = read.csv(file = '/Users/priyanka/Documents/Argonne/Data_Curation_final/Maps/es_gs_orig.csv')
+es_gs_file = read.csv(file = '../Maps/es_gs_orig.csv')
 es<-es_gs_file['entrenz_id']
 gs_org <- es_gs_file['gene_symbol']
 g_s <- eg2gs(unlist(es))
 ens <- eg2ensembl(unlist(es))
 map_new <- data.frame(orig_GS = unlist(gs_org),old_entrez_id = unlist(es), en2gs_GS = unlist(g_s), ens_id = unlist(ens))
-write.csv(map_new, '/Users/priyanka/Documents/Argonne/Data_Curation_final/Maps/eg_gs_map_cn_ge.csv')
+write.csv(map_new, '../Maps/eg_gs_map_cn_ge.csv')
 
 ### CCLE RRBS file 
-rrbs_file <- read.delim('/Users/priyanka/Documents/Argonne/Data_Curation_final/CCLE_Multiomics_Data/CCLE_RRBS_TSS_1kb_20180614.txt')
+rrbs_file <- read.delim('../CCLE_Multiomics_Data/CCLE_RRBS_TSS_1kb_20180614.txt')
 gs_orig <- rrbs_file['gene']
 e_id <- gs2eg(unlist(gs_orig))
 # Convert back the entrenz id to gene symbol
 gs_new <- eg2gs(e_id)
 ens_id = eg2ensembl(e_id)
 map_rrbs <- data.frame(orig_GS = unlist(gs_orig), new_entrenz_id = unlist(e_id), new_GS = unlist(gs_new), ens_id = unlist(ens_id))
-write.csv(map_rrbs, '/Users/priyanka/Documents/Argonne/Data_Curation_final/Maps/gs_eg_gs_map_rrbs.csv')
+write.csv(map_rrbs, '../Maps/gs_eg_gs_map_rrbs.csv')
 
 #CCLE_gene_expression_full
-gs_full_file = read.csv(file = '/Users/priyanka/Documents/Argonne/Data_Curation_final/Maps/ens_gs_gef_orig.csv')
+gs_full_file = read.csv(file = '../Maps/ens_gs_gef_orig.csv')
 ens<-gs_full_file['ensembl_id']
 gs_org <- gs_full_file['gene_symbol']
 e_s <- ensembl2eg(unlist(ens)) # Convert Ensembl ID to Entrenz ID
 gs_new <- eg2gs(e_s) # Convert Entrenz ID to Gene Symbol
 map_new <- data.frame(orig_GS = unlist(gs_org),orig_ensembl_id = unlist(ens), entrenzID = unlist(as.character(e_s)), new_GS = unlist(gs_new))
-write.csv(map_new, '/Users/priyanka/Documents/Argonne/Data_Curation_final/Maps/ens_eg_gs_map_gef.csv')
+write.csv(map_new, '../Maps/ens_eg_gs_map_gef.csv')
 
