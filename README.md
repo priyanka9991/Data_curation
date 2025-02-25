@@ -1,5 +1,5 @@
 Downloaded data files and curated files can be found in this lambda folder:
-/lambda_stor/homes/pvasanthakumari/Data_Curation_final
+/nfs/ml_lab/projects/Pilot1_PreclinicalHPC/priyanka/Data_Curation_final
 
 CCLE_Multiomics_Data -
 -Contains 10 files (Release 22Q2) downloaded from https://depmap.org/portal/download/
